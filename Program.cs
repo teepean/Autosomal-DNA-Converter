@@ -231,11 +231,10 @@ namespace atDNA_Conv
                 //
                 if (intype == TYPE_FTDNA)
                 {
-                    if (line.StartsWith("RSID"))
-                        continue;
-                    if (line.Trim() == "")
-                        continue;
-                    //
+                    if (line.StartsWith("RSID") || line.Trim() == "" || line.StartsWith("#"))
+                    {
+                         continue;
+                    }
                     tLine = line.Replace("\"", "");
                     data = tLine.Split(",".ToCharArray());
                     rsid = data[0];
@@ -245,11 +244,10 @@ namespace atDNA_Conv
                 }
                 if (intype == TYPE_FTDNA2)
                 {
-                    if (line.StartsWith("#"))
+                    if (line.StartsWith("#") || line.Trim() == "")
+                    {
                         continue;
-                    if (line.Trim() == "")
-                        continue;
-                    //
+                    }
                     data = line.Split(",".ToCharArray());
                     rsid = data[0];
                     chr = data[1];
@@ -259,11 +257,10 @@ namespace atDNA_Conv
 
                 if (intype == TYPE_23ANDME)
                 {
-                    if (line.StartsWith("#"))
+                    if (line.StartsWith("#") || line.Trim() == "")
+                    {
                         continue;
-                    if (line.Trim() == "")
-                        continue;
-                    //       
+                    }
                     data = line.Split("\t".ToCharArray());
                     rsid = data[0];
                     chr = data[1];
@@ -272,13 +269,10 @@ namespace atDNA_Conv
                 }
                 if (intype == TYPE_ANCESTRY)
                 {
-                    if (line.StartsWith("#"))
+                    if (line.StartsWith("#") || line.StartsWith("rsid\t") || line.Trim() == "")
+                    {
                         continue;
-                    if (line.StartsWith("rsid\t"))
-                        continue;
-                    if (line.Trim() == "")
-                        continue;
-                    //            
+                    }
                     data = line.Split("\t".ToCharArray());   
 
                     rsid = data[0];
@@ -290,11 +284,10 @@ namespace atDNA_Conv
                 }
                 if (intype == TYPE_GENO2)
                 {
-                    if (line.StartsWith("SNP,"))
+                    if (line.StartsWith("SNP,") || line.Trim() == "")
+                    {
                         continue;
-                    if (line.Trim() == "")
-                        continue;
-                    //            
+                    }
                     data = line.Split(",".ToCharArray());
 
                     rsid = data[0];
@@ -304,11 +297,10 @@ namespace atDNA_Conv
                 }
                 if (intype == TYPE_DECODEME)
                 {
-                    if (line.StartsWith("Name,"))
+                    if (line.StartsWith("Name,") || line.Trim() == "")
+                    {
                         continue;
-                    if (line.Trim() == "")
-                        continue;
-                    //            
+                    }
                     data = line.Split(",".ToCharArray());
 
                     rsid = data[0];
