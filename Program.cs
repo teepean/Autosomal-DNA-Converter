@@ -28,7 +28,7 @@ namespace atDNA_Conv
             Console.WriteLine("| Website: www.y-str.org                    |");
             Console.WriteLine("| Developer: Felix Immanuel <i@fi.id.au>    |");
             Console.WriteLine("| Version: 1.5                              |");
-            Console.WriteLine("| Build Date: 22-Jun-2019                   |");
+            Console.WriteLine("| Build Date: 16-Feb-2019                   |");
             Console.WriteLine("+-------------------------------------------+");
         }
 
@@ -312,7 +312,7 @@ namespace atDNA_Conv
 
                 if (outtype == TYPE_FTDNA)
                 {
-                    if (chr == "Y" || chr == "M" || chr == "MT" || chr == "24" || chr == "25")
+                    if (chr == "Y" || chr == "M" || chr == "MT" || chr == "24" || chr == "25" || chr == "0" || chr == "XY")
                         continue;
 
                     if (chr == "23")
@@ -323,6 +323,8 @@ namespace atDNA_Conv
                 }
                 else if (outtype == TYPE_23ANDME)
                 {
+                    if (chr == "0" || chr == "XY")
+                        continue;
                     if (chr == "23")
                         chr = "X";
                     else if (chr == "24")
@@ -351,6 +353,8 @@ namespace atDNA_Conv
                 }
                 else if (outtype == TYPE_GENO2)
                 {
+                    if (chr == "0" || chr == "XY")
+                        continue;
                     if (chr == "23")
                         chr = "X";
                     else if (chr == "24")
@@ -367,6 +371,8 @@ namespace atDNA_Conv
                 }
                 else if (outtype == TYPE_PLINK)
                 {
+                    if (chr == "0" || chr == "XY")
+                        continue;
                     if (chr == "23")
                         chr = "X";
                     else if (chr == "24")
@@ -399,6 +405,8 @@ namespace atDNA_Conv
                 }
                 else if (outtype == TYPE_EIGENSTRAT)
                 {
+                    if (chr == "0" || chr == "XY")
+                        continue;
                     if (chr == "X")
                         chr = "23";
                     else if (chr == "Y")
