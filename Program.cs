@@ -17,8 +17,9 @@ namespace atDNA_Conv
         public const int TYPE_GENO2 = 4;
         public const int TYPE_PLINK = 5;
         public const int TYPE_EIGENSTRAT = 6;
+        public const int TYPE_FTDNA2 = 7;
 
-        public static string[] TYPE = { "ftdna", "23andme", "ancestry", "decodeme", "geno2", "plink", "eigenstrat" };
+        public static string[] TYPE = { "ftdna", "23andme", "ancestry", "decodeme", "geno2", "plink", "eigenstrat", "ftdna2" };
 
         public static void printLogo()
         {
@@ -26,8 +27,8 @@ namespace atDNA_Conv
             Console.WriteLine("| Product: Autosomal DNA Converter          |");
             Console.WriteLine("| Website: www.y-str.org                    |");
             Console.WriteLine("| Developer: Felix Immanuel <i@fi.id.au>    |");
-            Console.WriteLine("| Version: 1.4                              |");
-            Console.WriteLine("| Build Date: 22-Jun-2015                   |");
+            Console.WriteLine("| Version: 1.5                              |");
+            Console.WriteLine("| Build Date: 22-Jun-2019                   |");
             Console.WriteLine("+-------------------------------------------+");
         }
 
@@ -38,7 +39,7 @@ namespace atDNA_Conv
             Console.WriteLine("\taconv <in-file> <out-file> [options]");
             Console.WriteLine();
             Console.WriteLine("Optional Parameters:");
-            Console.WriteLine(" -i  [Input Type]  - Value can be detect,ftdna,23andme,decodeme,ancestry or geno2. ");
+            Console.WriteLine(" -i  [Input Type]  - Value can be detect,ftdna,ftdna2,23andme,decodeme,ancestry or geno2. ");
             Console.WriteLine("                     This values is optional and not required. Use only if ");
             Console.WriteLine("                     autodetect fails. Default is detect");
             Console.WriteLine(" -o  [Output Type] - Value can be ftdna,23andme,ancestry,geno2, plink or eigenstrat.");
@@ -95,6 +96,8 @@ namespace atDNA_Conv
                                     in_type = -1;
                                 else if (args[i + 1].ToLower() == "ftdna")
                                     in_type = TYPE_FTDNA;
+                                else if (args[i + 1].ToLower() == "ftdna2")
+                                    in_type = TYPE_FTDNA2;
                                 else if (args[i + 1].ToLower() == "23andme")
                                     in_type = TYPE_23ANDME;
                                 else if (args[i + 1].ToLower() == "ancestry")
@@ -240,6 +243,20 @@ namespace atDNA_Conv
                     pos = data[2];
                     genotype = data[3];
                 }
+                if (intype == TYPE_FTDNA2)
+                {
+                    if (line.StartsWith("#"))
+                        continue;
+                    if (line.Trim() == "")
+                        continue;
+                    //
+                    data = line.Split(",".ToCharArray());
+                    rsid = data[0];
+                    chr = data[1];
+                    pos = data[2];
+                    genotype = data[3] + data[4];
+                }
+
                 if (intype == TYPE_23ANDME)
                 {
                     if (line.StartsWith("#"))
@@ -324,6 +341,8 @@ namespace atDNA_Conv
                 }
                 else if (outtype == TYPE_ANCESTRY)
                 {
+                    if (chr == "0" || chr == "XY")
+                        continue;
                     if (chr == "X")
                         chr = "23";
                     else if (chr == "Y")
@@ -437,6 +456,8 @@ namespace atDNA_Conv
             {
                 if (line == "RSID,CHROMOSOME,POSITION,RESULT")
                     return TYPE_FTDNA;
+                if (line == "# name,chromosome,position,allele1,allele2")
+                    return TYPE_FTDNA2;
                 if (line == "# rsid\tchromosome\tposition\tgenotype")
                     return TYPE_23ANDME;
                 if (line == "rsid\tchromosome\tposition\tallele1\tallele2")
