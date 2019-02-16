@@ -456,7 +456,7 @@ namespace atDNA_Conv
             {
                 if (line == "RSID,CHROMOSOME,POSITION,RESULT")
                     return TYPE_FTDNA;
-                if (line == "# name,chromosome,position,allele1,allele2")
+                if (line.StartsWith("# famfinder"))
                     return TYPE_FTDNA2;
                 if (line == "# rsid\tchromosome\tposition\tgenotype")
                     return TYPE_23ANDME;
