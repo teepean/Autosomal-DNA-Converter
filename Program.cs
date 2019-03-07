@@ -27,8 +27,8 @@ namespace atDNA_Conv
             Console.WriteLine("| Product: Autosomal DNA Converter          |");
             Console.WriteLine("| Website: www.y-str.org                    |");
             Console.WriteLine("| Developer: Felix Immanuel <i@fi.id.au>    |");
-            Console.WriteLine("| Version: 1.5                              |");
-            Console.WriteLine("| Build Date: 16-Feb-2019                   |");
+            Console.WriteLine("| Version: 1.7                              |");
+            Console.WriteLine("| Build Date: 07-Mar-2019                   |");
             Console.WriteLine("+-------------------------------------------+");
         }
 
