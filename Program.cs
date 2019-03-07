@@ -39,7 +39,7 @@ namespace atDNA_Conv
             Console.WriteLine("\taconv <in-file> <out-file> [options]");
             Console.WriteLine();
             Console.WriteLine("Optional Parameters:");
-            Console.WriteLine(" -i  [Input Type]  - Value can be detect,ftdna,ftdna2,23andme,decodeme,ancestry or geno2. ");
+            Console.WriteLine(" -i  [Input Type]  - Value can be detect,ftdna,ftdna2,23andme,decodeme,ancestry, eigenstrat or geno2. ");
             Console.WriteLine("                     This values is optional and not required. Use only if ");
             Console.WriteLine("                     autodetect fails. Default is detect");
             Console.WriteLine(" -o  [Output Type] - Value can be ftdna,23andme,ancestry,geno2, plink or eigenstrat.");
@@ -106,6 +106,8 @@ namespace atDNA_Conv
                                     in_type = TYPE_DECODEME;
                                 else if (args[i + 1].ToLower() == "geno2")
                                     in_type = TYPE_GENO2;
+                                else if (args[i + 1].ToLower() == "eigenstrat")
+                                    in_type = TYPE_EIGENSTRAT;
                             }
                             if (args[i] == "-o")
                             {
@@ -266,6 +268,17 @@ namespace atDNA_Conv
                     chr = data[1];
                     pos = data[2];
                     genotype = data[3];
+                }
+                if (intype == TYPE_EIGENSTRAT)
+                {
+                    data = line.Split("\t".ToCharArray());   
+
+                    rsid = data[0];
+                    chr = data[1];
+                    if (chr == "23")
+                        chr = "X";
+                    pos = data[3];
+                    genotype = data[4] + data[5];
                 }
                 if (intype == TYPE_ANCESTRY)
                 {
