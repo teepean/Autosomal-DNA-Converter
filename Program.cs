@@ -18,8 +18,9 @@ namespace atDNA_Conv
         public const int TYPE_PLINK = 5;
         public const int TYPE_EIGENSTRAT = 6;
         public const int TYPE_FTDNA2 = 7;
+        public const int TYPE_IYG = 8;
 
-        public static string[] TYPE = { "ftdna", "23andme", "ancestry", "decodeme", "geno2", "plink", "eigenstrat", "ftdna2" };
+        public static string[] TYPE = { "ftdna", "23andme", "ancestry", "decodeme", "geno2", "plink", "eigenstrat", "ftdna2", "iyg" };
 
         public static void printLogo()
         {
@@ -27,8 +28,8 @@ namespace atDNA_Conv
             Console.WriteLine("| Product: Autosomal DNA Converter          |");
             Console.WriteLine("| Website: www.y-str.org                    |");
             Console.WriteLine("| Developer: Felix Immanuel <i@fi.id.au>    |");
-            Console.WriteLine("| Version: 1.7                              |");
-            Console.WriteLine("| Build Date: 07-Mar-2019                   |");
+            Console.WriteLine("| Version: 1.8                              |");
+            Console.WriteLine("| Build Date: 10-Apr-2019                   |");
             Console.WriteLine("+-------------------------------------------+");
         }
 
@@ -39,7 +40,7 @@ namespace atDNA_Conv
             Console.WriteLine("\taconv <in-file> <out-file> [options]");
             Console.WriteLine();
             Console.WriteLine("Optional Parameters:");
-            Console.WriteLine(" -i  [Input Type]  - Value can be detect,ftdna,ftdna2,23andme,decodeme,ancestry, eigenstrat or geno2. ");
+            Console.WriteLine(" -i  [Input Type]  - Value can be detect,ftdna,ftdna2,23andme,decodeme,ancestry, eigenstrat, iyg or geno2. ");
             Console.WriteLine("                     This values is optional and not required. Use only if ");
             Console.WriteLine("                     autodetect fails. Default is detect");
             Console.WriteLine(" -o  [Output Type] - Value can be ftdna,23andme,ancestry,geno2, plink or eigenstrat.");
@@ -108,6 +109,8 @@ namespace atDNA_Conv
                                     in_type = TYPE_GENO2;
                                 else if (args[i + 1].ToLower() == "eigenstrat")
                                     in_type = TYPE_EIGENSTRAT;
+                                else if (args[i + 1].ToLower() == "iyg")
+                                    in_type = TYPE_IYG;
                             }
                             if (args[i] == "-o")
                             {
@@ -321,6 +324,19 @@ namespace atDNA_Conv
                     pos = data[3];
                     genotype = data[5];
                 }
+                if (intype == TYPE_IYG)
+                {
+                    if (line.StartsWith("Sample ID,") || line.StartsWith("[") || line.StartsWith("GSGT") || line.StartsWith("Processing") || line.StartsWith("Content") || line.StartsWith("Num") || line.StartsWith("Total") || line.StartsWith("File") || line.Trim() == "")
+                    {
+                        continue;
+                    }
+                    data = line.Split(",".ToCharArray());
+
+                    rsid = data[1];
+                    chr = data[2];                    
+                    pos = data[3];
+                    genotype = data[6] + data[7];
+                }
                 //rows.Add(new string[]{rsid,chr,pos,genotype});
 
                 if (outtype == TYPE_FTDNA)
@@ -479,6 +495,9 @@ namespace atDNA_Conv
                     return TYPE_DECODEME;
                 if (line == "SNP,Chr,Allele1,Allele2")
                     return TYPE_GENO2;
+                if (line == "[Header]")
+                    return TYPE_IYG;
+				
                 /* if above doesn't work */
                 if (line.Split("\t".ToCharArray()).Length == 4)
                     return TYPE_23ANDME;
