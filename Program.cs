@@ -19,8 +19,9 @@ namespace atDNA_Conv
         public const int TYPE_EIGENSTRAT = 6;
         public const int TYPE_FTDNA2 = 7;
         public const int TYPE_IYG = 8;
+        public const int TYPE_GSGT = 9;
 
-        public static string[] TYPE = { "ftdna", "23andme", "ancestry", "decodeme", "geno2", "plink", "eigenstrat", "ftdna2", "iyg" };
+        public static string[] TYPE = { "ftdna", "23andme", "ancestry", "decodeme", "geno2", "plink", "eigenstrat", "ftdna2", "iyg", "gsgt" };
 
         public static void printLogo()
         {
@@ -29,7 +30,7 @@ namespace atDNA_Conv
             Console.WriteLine("| Website: www.y-str.org                    |");
             Console.WriteLine("| Developer: Felix Immanuel <i@fi.id.au>    |");
             Console.WriteLine("| Version: 1.8                              |");
-            Console.WriteLine("| Build Date: 10-Apr-2019                   |");
+            Console.WriteLine("| Build Date: 8-May-2019                   |");
             Console.WriteLine("+-------------------------------------------+");
         }
 
@@ -40,7 +41,7 @@ namespace atDNA_Conv
             Console.WriteLine("\taconv <in-file> <out-file> [options]");
             Console.WriteLine();
             Console.WriteLine("Optional Parameters:");
-            Console.WriteLine(" -i  [Input Type]  - Value can be detect,ftdna,ftdna2,23andme,decodeme,ancestry, eigenstrat, iyg or geno2. ");
+            Console.WriteLine(" -i  [Input Type]  - Value can be detect,ftdna,ftdna2,23andme,decodeme,ancestry, eigenstrat, iyg, gsgt or geno2. ");
             Console.WriteLine("                     This values is optional and not required. Use only if ");
             Console.WriteLine("                     autodetect fails. Default is detect");
             Console.WriteLine(" -o  [Output Type] - Value can be ftdna,23andme,ancestry,geno2, plink or eigenstrat.");
@@ -111,6 +112,8 @@ namespace atDNA_Conv
                                     in_type = TYPE_EIGENSTRAT;
                                 else if (args[i + 1].ToLower() == "iyg")
                                     in_type = TYPE_IYG;
+                                else if (args[i + 1].ToLower() == "gsgt")
+                                    in_type = TYPE_GSGT;
                             }
                             if (args[i] == "-o")
                             {
@@ -337,6 +340,19 @@ namespace atDNA_Conv
                     pos = data[3];
                     genotype = data[6] + data[7];
                 }
+                if (intype == TYPE_GSGT)
+                {
+                    if (line.StartsWith("Sample ID,") || line.StartsWith("[") || line.StartsWith("GSGT") || line.StartsWith("Processing") || line.StartsWith("Content") || line.StartsWith("Num") || line.StartsWith("Total") || line.StartsWith("File") || line.Trim() == "")
+                    {
+                        continue;
+                    }
+                    data = line.Split(",".ToCharArray());
+
+                    rsid = data[4];
+                    chr = data[1];
+                    pos = data[2];
+                    genotype = data[7] + data[8];
+                }
                 //rows.Add(new string[]{rsid,chr,pos,genotype});
 
                 if (outtype == TYPE_FTDNA)
@@ -495,8 +511,8 @@ namespace atDNA_Conv
                     return TYPE_DECODEME;
                 if (line == "SNP,Chr,Allele1,Allele2")
                     return TYPE_GENO2;
-                if (line == "[Header]")
-                    return TYPE_IYG;
+//                if (line == "[Header]")
+//                    return TYPE_IYG;
 				
                 /* if above doesn't work */
                 if (line.Split("\t".ToCharArray()).Length == 4)
