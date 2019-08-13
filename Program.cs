@@ -20,17 +20,19 @@ namespace atDNA_Conv
         public const int TYPE_FTDNA2 = 7;
         public const int TYPE_IYG = 8;
         public const int TYPE_GSGT = 9;
+        public const int TYPE_FTDNA3 = 10;
 
-        public static string[] TYPE = { "ftdna", "23andme", "ancestry", "decodeme", "geno2", "plink", "eigenstrat", "ftdna2", "iyg", "gsgt" };
+        public static string[] TYPE = { "ftdna", "23andme", "ancestry", "decodeme", "geno2", "plink", "eigenstrat", "ftdna2", "iyg", "gsgt", "ftdna3" };
 
         public static void printLogo()
         {
             Console.WriteLine("+-------------------------------------------+");
             Console.WriteLine("| Product: Autosomal DNA Converter          |");
             Console.WriteLine("| Website: www.y-str.org                    |");
-            Console.WriteLine("| Developer: Felix Immanuel <i@fi.id.au>    |");
-            Console.WriteLine("| Version: 1.8                              |");
-            Console.WriteLine("| Build Date: 8-May-2019                   |");
+            Console.WriteLine("| Felix Immanuel <i@fi.id.au>               |");
+            Console.WriteLine("| Teemu Nätkinniemi <tnatkinn@gmail.com>    |");
+            Console.WriteLine("| Version: 2.0                              |");
+            Console.WriteLine("| Build Date: 13-Aug-2019                   |");
             Console.WriteLine("+-------------------------------------------+");
         }
 
@@ -41,7 +43,7 @@ namespace atDNA_Conv
             Console.WriteLine("\taconv <in-file> <out-file> [options]");
             Console.WriteLine();
             Console.WriteLine("Optional Parameters:");
-            Console.WriteLine(" -i  [Input Type]  - Value can be detect,ftdna,ftdna2,23andme,decodeme,ancestry, eigenstrat, iyg, gsgt or geno2. ");
+            Console.WriteLine(" -i  [Input Type]  - Value can be detect,ftdna,ftdna2,23andme,decodeme,ancestry, eigenstrat, iyg, gsgt, ftdna3 or geno2. ");
             Console.WriteLine("                     This values is optional and not required. Use only if ");
             Console.WriteLine("                     autodetect fails. Default is detect");
             Console.WriteLine(" -o  [Output Type] - Value can be ftdna,23andme,ancestry,geno2, plink or eigenstrat.");
@@ -100,6 +102,8 @@ namespace atDNA_Conv
                                     in_type = TYPE_FTDNA;
                                 else if (args[i + 1].ToLower() == "ftdna2")
                                     in_type = TYPE_FTDNA2;
+                                else if (args[i + 1].ToLower() == "ftdna3")
+                                    in_type = TYPE_FTDNA3;
                                 else if (args[i + 1].ToLower() == "23andme")
                                     in_type = TYPE_23ANDME;
                                 else if (args[i + 1].ToLower() == "ancestry")
@@ -262,7 +266,19 @@ namespace atDNA_Conv
                     pos = data[2];
                     genotype = data[3] + data[4];
                 }
-
+                if (intype == TYPE_FTDNA3)
+                {
+                    if (!line.StartsWith("rs"))
+                    {
+                        continue;
+                    }
+                    tLine = line.Replace("\"", "");
+                    data = line.Split(",".ToCharArray());
+                    rsid = data[0];
+                    chr = data[1];
+                    pos = data[2];
+                    genotype = data[3];
+                }
                 if (intype == TYPE_23ANDME)
                 {
                     if (line.StartsWith("#") || line.Trim() == "")
@@ -357,9 +373,10 @@ namespace atDNA_Conv
 
                 if (outtype == TYPE_FTDNA)
                 {
-                    if (chr == "Y" || chr == "M" || chr == "MT" || chr == "24" || chr == "25" || chr == "0" || chr == "XY")
+                    if (chr == "Y" || chr == "M" || chr == "MT" || chr == "24" || chr == "25" || chr == "0" || chr == "XY" || chr == "26")
                         continue;
-
+					if (genotype == "II" || genotype == "DI" || genotype == "DD")
+                        continue;
                     if (chr == "23")
                         chr = "X";
                     else if (chr == "24")
@@ -368,7 +385,9 @@ namespace atDNA_Conv
                 }
                 else if (outtype == TYPE_23ANDME)
                 {
-                    if (chr == "0" || chr == "XY")
+                    if (chr == "0" || chr == "XY" || chr == "26")
+                        continue;
+					if (genotype == "II" || genotype == "DI" || genotype == "DD")
                         continue;
                     if (chr == "23")
                         chr = "X";
